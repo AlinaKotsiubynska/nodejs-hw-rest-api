@@ -10,7 +10,7 @@ const removeContact = async (id) => {
     return null
   }
   const contact = contacts.splice(index, 1)[0]
-  fs.writeFile(contactsPath, JSON.stringify(contacts)).catch(err => console.log(err))
+  fs.writeFile(contactsPath, JSON.stringify(contacts))
   return contact
 }
 
