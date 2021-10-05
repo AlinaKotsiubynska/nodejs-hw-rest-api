@@ -4,7 +4,7 @@ const { newContactSchema, edeitContactSchema } = require('../schemas')
 
 const listContacts = async (req, res, next) => {
   try {
-    const contacts = await contactsOperations.listContacts()
+    const contacts = await Contact.find()
     res.json(contacts)
   } catch (error) {
     res.json({ message: error.message })
