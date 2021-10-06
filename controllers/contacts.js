@@ -85,7 +85,7 @@ const updateStatusContact = async (req, res, next) => {
     if (favorite === undefined) {
       throw new DbError(400, 'missing field favorite')
     }
-    const updatetContact = await operation.updateStatusContact(contactId, {favorite})
+    const updatetContact = await operation.updateStatusContact(contactId, { favorite })
     res.json(updatetContact)
   } catch (error) {
     // res.status(error.status).json({ status: 'error', code: error.status, message: error.message })
