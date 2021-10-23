@@ -5,15 +5,17 @@ const {
   newUserSchema,
   loginUserSchema,
   editUserSubscrSchema } = require('@helpers/schemas/user')
+const { hashPassword } = require('@utils/bcryptPasswordService')
 
 const addUser = async (req, res, next) => {
   try {
-    const candidate = req.body
-    const { error } = newUserSchema.validate(candidate)
+    const { email, password } = req.body
+    const { error } = newUserSchema.validate({ email, password })
     if (error) {
       throw new CustomError(400, error.message)
     }
-    const { email, subscription } = await operation.addUser(candidate)
+    const hashedPassword = await hashPassword(password)
+    const { subscription } = await operation.addUser({ email, password: hashedPassword })
 
     res.status(201).json({ user: { email, subscription } })
   } catch (error) {
