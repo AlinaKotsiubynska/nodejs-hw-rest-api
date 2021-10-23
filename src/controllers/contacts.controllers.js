@@ -1,7 +1,7 @@
-const operation = require('@helpers/operations/contacts')
+const operation = require('@helpers/operations/contact')
 const resErrorHandler = require('@utils/resErrorHandler')
 const { CustomError } = require('@utils/CustomError')
-const { newContactSchema, edeitContactSchema } = require('@helpers/schemas')
+const { newContactSchema, editContactSchema } = require('@helpers/schemas/contact')
 
 const listContacts = async (req, res, next) => {
   try {

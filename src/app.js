@@ -15,10 +15,8 @@ app.use(logger(formatsLogger))
 app.use(cors())
 app.use(express.json())
 
-// app.use(() => console.log('catched request'))
 app.use('/api/users', usersRouter)
-app.use(jwtValidator)
-app.use('/api/contacts', contactsRouter)
+app.use('/api/contacts', jwtValidator, contactsRouter)
 
 app.use((req, res) => {
   res.status(404).json({ message: 'Not found' })

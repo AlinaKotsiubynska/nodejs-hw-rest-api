@@ -1,4 +1,5 @@
 const { Schema, model } = require('mongoose')
+const { SUBSCR_TYPES } = require('@helpers/constants')
 
 const user = new Schema(
   {
@@ -13,8 +14,8 @@ const user = new Schema(
     },
     subscription: {
       type: String,
-      enum: ['starter', 'pro', 'business'],
-      default: 'starter'
+      enum: Object.values(SUBSCR_TYPES),
+      default: SUBSCR_TYPES.STARTER
     },
     token: {
       type: String,
