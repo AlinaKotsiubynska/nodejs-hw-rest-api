@@ -1,6 +1,7 @@
 const { Router } = require('express')
 const router = Router()
 const { users: ctrl } = require('@controllers')
+const { jwtValidator } = require('@middlewares')
 
 // router.get('/', ctrl.listContacts)
 
@@ -10,7 +11,7 @@ router.post('/signup', ctrl.addUser)
 
 router.post('/login', ctrl.loginUser)
 
-// router.put('/:contactId', ctrl.updateContact)
+router.post('/logout', jwtValidator, ctrl.logoutUser)
 
 // router.patch('/:contactId/favorite', ctrl.updateStatusContact)
 

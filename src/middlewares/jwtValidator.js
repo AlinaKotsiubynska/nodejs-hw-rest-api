@@ -10,7 +10,7 @@ const jwtValidator = async (req, res, next) => {
   try {
     const auth = req.headers.authorization
     if (!auth) {
-      throw new CustomError(400, 'Jwt token is not provided')
+      throw new CustomError(401, "Not authorized")
     }
     const matchTokenRegex = auth.match(JWT_TOKEN_REGEX)
     const token = matchTokenRegex ? matchTokenRegex[0] : ''
@@ -18,11 +18,10 @@ const jwtValidator = async (req, res, next) => {
     const currentUser = await User.findById(verified['_id'])
 
     if (!currentUser || currentUser.token !== token) {
-      throw new CustomError(400, 'Invalid jwt token')
+      throw new CustomError(401, "Not authorized")
     }
 
-    req.verifiedUser = verified
-    req.userRole = currentUser.role
+    req.user = verified
     next()
   } catch (error) {
     res.status(error.status || 400).json({ message: error.message })

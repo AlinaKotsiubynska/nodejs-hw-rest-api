@@ -47,33 +47,14 @@ const loginUser = async (req, res, next) => {
 }
 
 const logoutUser = async (req, res, next) => {
-  // try {
-  //   const { email } = req.body
-  //   const { error } = forgetPasswordSchema.validate({ email })
-  //   if (error) {
-  //     throw new CustomError(400, error.message)
-  //   }
-  //   const user = await User.findOne({ email: email })
-  //   if (!user) {
-  //     throw new CustomError(400, 'Invalid email')
-  //   }
+  try {
+    const { _id } = req.user
+    await operation.logoutUser(_id)
 
-  //   const newPass = getRandomPass()
-  //   const hashedPass = await hashPassword(newPass)
-  //   user.password = hashedPass
-  //   await user.save()
-  //   const mailOptions = {
-  //     from: 'alinakotsiubynska@gmail.com',
-  //     to: email,
-  //     subject: 'Password reset',
-  //     text: `Your new email is ${newPass}. Please, change it after next login`
-  //   };
-  //   await mailServise.send(mailOptions)
-
-  //   res.status(200).json({ message: 'New password sent to your email address' })
-  // } catch (error) {
-  //   resErrorHandler(res, error)
-  // }
+    res.status(204).send()
+  } catch (error) {
+    resErrorHandler(res, error)
+  }
 }
 
 module.exports = { addUser, loginUser, logoutUser }
