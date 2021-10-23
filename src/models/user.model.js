@@ -1,6 +1,6 @@
 const { Schema, model } = require('mongoose')
 
-const contact = new Schema(
+const user = new Schema(
   {
     password: {
       type: String,
@@ -23,6 +23,6 @@ const contact = new Schema(
   }
 )
 
-const Contact = model('contacts', contact)
+const User = model('users', user)
 
-module.exports = Contact
+module.exports = User

@@ -1,9 +1,11 @@
+require('@configs/db.config')
 const express = require('express')
 const logger = require('morgan')
 const cors = require('cors')
-require('./db/connections')
 
-const contactsRouter = require('./routes/api/contacts')
+const contactsRouter = require('@routes/api/contacts.routes')
+const usersRouter = require('@routes/api/users.routes')
+const { jwtValidator } = require('@middlewares')
 
 const app = express()
 
@@ -14,6 +16,8 @@ app.use(cors())
 app.use(express.json())
 
 // app.use(() => console.log('catched request'))
+app.use('/api/users', usersRouter)
+app.use(jwtValidator)
 app.use('/api/contacts', contactsRouter)
 
 app.use((req, res) => {

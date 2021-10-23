@@ -1,4 +1,4 @@
-class DbError extends Error {
+class CustomError extends Error {
   constructor(status, message) {
     super()
     this.status = status
@@ -6,4 +6,4 @@ class DbError extends Error {
   }
 }
 
-module.exports = DbError
+module.exports = { CustomError }
