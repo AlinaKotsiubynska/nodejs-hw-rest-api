@@ -1,9 +1,13 @@
 const { User } = require('@models')
 const { CustomError } = require('@utils/CustomError')
+const { hashPassword } = require('@utils/bcryptPasswordService')
 
 const addUser = async (candidate) => {
   try {
-    return await User.create(candidate)
+    const { email, password } = candidate
+    const hashedPassword = await hashPassword(password)
+    const user = { email, password: hashedPassword }
+    return await User.create(user)
   } catch (error) {
     if (error.message.includes('E11000')) {
       throw new CustomError(409, "Email in use")

@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken')
-const SECRET_KEY = require('@configs/auth.config')
+const { SECRET_KEY } = process.env
 
 
 const jwtGenerator = ({ email, _id }) => {

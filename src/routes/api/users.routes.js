@@ -8,7 +8,7 @@ const { users: ctrl } = require('@controllers')
 
 router.post('/signup', ctrl.addUser)
 
-// router.delete('/:contactId', ctrl.removeContact)
+router.post('/login', ctrl.loginUser)
 
 // router.put('/:contactId', ctrl.updateContact)
 

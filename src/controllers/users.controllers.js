@@ -5,17 +5,17 @@ const {
   newUserSchema,
   loginUserSchema,
   editUserSubscrSchema } = require('@helpers/schemas/user')
-const { hashPassword } = require('@utils/bcryptPasswordService')
+
 
 const addUser = async (req, res, next) => {
   try {
-    const { email, password } = req.body
-    const { error } = newUserSchema.validate({ email, password })
+    const candidate = req.body
+    const { error } = newUserSchema.validate(candidate)
     if (error) {
       throw new CustomError(400, error.message)
     }
-    const hashedPassword = await hashPassword(password)
-    const { subscription } = await operation.addUser({ email, password: hashedPassword })
+
+    const { subscription, email } = await operation.addUser(candidate)
 
     res.status(201).json({ user: { email, subscription } })
   } catch (error) {
@@ -24,23 +24,26 @@ const addUser = async (req, res, next) => {
 }
 
 const loginUser = async (req, res, next) => {
-  // try {
-  //   const candidate = req.body
-  //   const { error } = loginUserSchema.validate(candidate)
-  //   if (error) {
-  //     throw new CustomError(400, error.message)
-  //   }
-  //   const user = await User.findOne({ email: candidate.email })
-  //   if (!user) {
-  //     throw new CustomError(400, 'Invalid email')
-  //   }
-  //   await validateHashedPassword(user.password, candidate.password)
-  //   user.token = jwtGenerator(user)
-  //   await user.save()
-  //   res.status(200).json({ jwt_token: user.token })
-  // } catch (error) {
-  //   resErrorHandler(res, error)
-  // }
+  try {
+    const candidate = req.body
+    const { error } = loginUserSchema.validate(candidate)
+
+    if (error) {
+      throw new CustomError(400, error.message)
+    }
+
+    const user = await operation.loginUser(candidate)
+
+    res.status(200).json({
+      token: user.token,
+      user: {
+        email: user.email,
+        subscription: user.subscription
+      }
+    })
+  } catch (error) {
+    resErrorHandler(res, error)
+  }
 }
 
 const logoutUser = async (req, res, next) => {
