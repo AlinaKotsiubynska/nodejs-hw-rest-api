@@ -1,5 +1,5 @@
 // const listContacts = require('./listContacts')
-// const getContactById = require('./getContactById')
+const getCurrentUser = require('./getCurrentUser')
 const addUser = require('./addUser')
 const loginUser = require('./loginUser')
 const logoutUser = require('./logoutUser')
@@ -13,6 +13,7 @@ module.exports = {
   addUser,
   loginUser,
   logoutUser,
+  getCurrentUser
   // removeContact,
   // updateStatusContact,
   // checkContact
