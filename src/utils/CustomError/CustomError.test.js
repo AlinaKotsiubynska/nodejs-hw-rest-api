@@ -1,5 +1,4 @@
-/* eslint-disable no-undef */
-const { CustomError } = require('utils/CustomError')
+const { CustomError } = require('@utils')
 
 describe('Make new CustomError', () => {
   const newError = new CustomError(400, 'Error message')

@@ -1,5 +1,5 @@
 const { User } = require('@models')
-const { CustomError } = require('@utils/CustomError')
+const { CustomError } = require('@utils')
 
 const getCurrentUser = async (id) => {
   try {
@@ -7,7 +7,7 @@ const getCurrentUser = async (id) => {
     return await User.findById(id)
 
   } catch (error) {
-    throw new CustomError(400, error.message + '10getCUrrent user')
+    throw new CustomError(400, error.message)
   }
 }
 

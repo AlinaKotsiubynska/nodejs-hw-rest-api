@@ -1,6 +1,5 @@
 const operation = require('@helpers/operations/contact')
-const resErrorHandler = require('@utils/resErrorHandler')
-const { CustomError } = require('@utils/CustomError')
+const { resErrorHandler, CustomError, joiValidationService } = require('@utils')
 const { newContactSchema, editContactSchema } = require('@helpers/schemas/contact')
 
 const listContacts = async (req, res, next) => {
@@ -28,10 +27,9 @@ const getContactById = async (req, res, next) => {
 const addContact = async (req, res, next) => {
   try {
     const candidate = req.body
-    const { error } = newContactSchema.validate(candidate)
-    if (error) {
-      throw new CustomError(400, error.message)
-    }
+
+    joiValidationService(newContactSchema, candidate)
+
     const newContact = await operation.addContact(candidate)
     res.status(201).json(newContact)
   } catch (error) {

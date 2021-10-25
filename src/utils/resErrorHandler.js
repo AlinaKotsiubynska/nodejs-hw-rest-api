@@ -6,4 +6,4 @@ const resErrorHandler = (res, error) => {
   }
 }
 
-module.exports = resErrorHandler
+module.exports = { resErrorHandler }

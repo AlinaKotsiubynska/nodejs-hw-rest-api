@@ -1,6 +1,5 @@
 const { User } = require('@models')
-const { CustomError } = require('@utils/CustomError')
-const { hashPassword } = require('@utils/bcryptPasswordService')
+const { CustomError, hashPassword } = require('@utils')
 
 const addUser = async (candidate) => {
   try {

@@ -212,7 +212,7 @@ Status: 204 No Content
 ## Шаг 5
 ### Текущий пользователь - получить данные юзера по токену
 
-Создайте эндпоинт [`/users/current`](#current-user-request)
++Создайте эндпоинт [`/users/current`](#current-user-request)
 
 Добавьте в маршрут мидлвар проверки токена.
 

@@ -1,7 +1,5 @@
 const { User } = require('@models')
-const { CustomError } = require('@utils/CustomError')
-const { validateHashedPassword } = require('@utils/bcryptPasswordService')
-const { jwtGenerator } = require('@utils/jwtGenerator')
+const { CustomError, validateHashedPassword, jwtGenerator } = require('@utils')
 
 const loginUser = async (candidate) => {
   try {

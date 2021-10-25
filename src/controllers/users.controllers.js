@@ -1,6 +1,5 @@
+const { resErrorHandler, joiValidationService } = require('@utils')
 const operation = require('@helpers/operations/user')
-const resErrorHandler = require('@utils/resErrorHandler')
-const { CustomError } = require('@utils/CustomError')
 const {
   newUserSchema,
   loginUserSchema,
@@ -10,10 +9,8 @@ const {
 const addUser = async (req, res, next) => {
   try {
     const candidate = req.body
-    const { error } = newUserSchema.validate(candidate)
-    if (error) {
-      throw new CustomError(400, error.message)
-    }
+
+    joiValidationService(newUserSchema, candidate)
 
     const { subscription, email } = await operation.addUser(candidate)
 
@@ -26,11 +23,8 @@ const addUser = async (req, res, next) => {
 const loginUser = async (req, res, next) => {
   try {
     const candidate = req.body
-    const { error } = loginUserSchema.validate(candidate)
 
-    if (error) {
-      throw new CustomError(400, error.message)
-    }
+    joiValidationService(loginUserSchema, candidate)
 
     const user = await operation.loginUser(candidate)
 
@@ -49,6 +43,7 @@ const loginUser = async (req, res, next) => {
 const logoutUser = async (req, res, next) => {
   try {
     const { _id } = req.user
+
     await operation.logoutUser(_id)
 
     res.status(204).send()
@@ -60,6 +55,7 @@ const logoutUser = async (req, res, next) => {
 const getCurrentUser = async (req, res, next) => {
   try {
     const { _id } = req.user
+
     const { email, subscription } = await operation.getCurrentUser(_id)
 
     res.status(200).json({ email, subscription })
@@ -68,4 +64,18 @@ const getCurrentUser = async (req, res, next) => {
   }
 }
 
-module.exports = { addUser, loginUser, logoutUser, getCurrentUser }
+const editUserSubscr = async (req, res) => {
+  try {
+    const { _id } = req.user
+    const { subscription } = req.body
+
+    joiValidationService(editUserSubscrSchema, { subscription })
+
+    await operation.editUserSubscr(_id, subscription)
+    res.status(204).send()
+  } catch (error) {
+    resErrorHandler(res, error)
+  }
+}
+
+module.exports = { addUser, loginUser, logoutUser, getCurrentUser, editUserSubscr }
