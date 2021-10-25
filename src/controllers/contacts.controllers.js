@@ -1,10 +1,19 @@
 const operation = require('@helpers/operations/contact')
 const { resErrorHandler, CustomError, joiValidationService } = require('@utils')
-const { newContactSchema, editContactSchema } = require('@helpers/schemas/contact')
+const { newContactSchema, editContactSchema, listContactsSchema } = require('@helpers/schemas/contact')
 
 const listContacts = async (req, res, next) => {
   try {
-    const contacts = await operation.listContacts()
+    const { favorite, page, limit } = req.query
+    joiValidationService(listContactsSchema, { favorite, page, limit })
+
+    const paginationOps = {
+      skip: page ? parseInt(page) * limit : 0,
+      limit: limit ? parseInt(limit) : 0
+    }
+    const searchOpts = favorite === undefined ? {} : { favorite }
+
+    const contacts = await operation.listContacts(searchOpts, paginationOps)
     res.json(contacts)
   } catch (error) {
     res.json({ message: error.message })
@@ -53,15 +62,14 @@ const removeContact = async (req, res, next) => {
 const updateContact = async (req, res, next) => {
   try {
     const { contactId } = req.params
-    const updatetContact = await operation.updateContact({ id: contactId, body: req.body })
-    if (!updatetContact) {
+    const updatedContact = await operation.updateContact({ id: contactId, body: req.body })
+    if (!updatedContact) {
       throw new CustomError(404, 'Not found')
     }
-    const { error } = edeitContactSchema.validate(req.body)
-    if (error) {
-      throw new CustomError(400, error.message)
-    }
-    res.json(updatetContact)
+
+    joiValidationService(editContactSchema, req.body)
+
+    res.json(updatedContact)
   } catch (error) {
     resErrorHandler(res, error)
   }
@@ -75,10 +83,8 @@ const updateStatusContact = async (req, res, next) => {
     if (!isContactExists) {
       throw new CustomError(404, 'Not found')
     }
+    joiValidationService(updateContactStatusSchema, { favorite })
 
-    if (favorite === undefined) {
-      throw new CustomError(400, 'missing field favorite')
-    }
     const updatetContact = await operation.updateStatusContact(contactId, { favorite })
     res.json(updatetContact)
   } catch (error) {
