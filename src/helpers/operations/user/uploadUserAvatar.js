@@ -1,12 +1,12 @@
 const { User } = require('@models')
 const { CustomError } = require('@utils')
 
-const editUserSubscr = async (id, { subscription }) => {
+const uploadUserAvatar = async (id, url) => {
   try {
-    await User.findByIdAndUpdate(id, { subscription: subscription })
+    await User.findByIdAndUpdate(id, { avatarURL: url })
   } catch (error) {
     throw new CustomError(400, error.message)
   }
 }
 
-module.exports = editUserSubscr
+module.exports = uploadUserAvatar

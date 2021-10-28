@@ -1,10 +1,12 @@
-const { resErrorHandler, joiValidationService, createGravatar } = require('@utils')
+const { resErrorHandler, joiValidationService, createGravatar, CustomError } = require('@utils')
 const operation = require('@helpers/operations/user')
 const {
   newUserSchema,
   loginUserSchema,
   editUserSubscrSchema } = require('@helpers/schemas/user')
-
+const Jimp = require('jimp')
+const fs = require('fs/promises')
+const path = require('path')
 
 const addUser = async (req, res, next) => {
   try {
@@ -81,16 +83,26 @@ const editUserSubscr = async (req, res) => {
 }
 
 const uploadUserAvatar = async (req, res) => {
-  const uploadDir = path.join(__dirname, '../', 'public')
+  if(!req.file) {
+    throw new CustomError(400, 'No file attached')
+  }
   const { originalname, path: tempPath } = req.file
+  
+  const { email: userEmail } = req.user
   try {
-    const publicPath = path.join(uploadDir, 'avatars', originalname)
-    const filePath = path.join('public', 'avatars', originalname)
-    await fs.rename(tempPath, publicPath).catch(err => console.log('err', err))
+    const ext = path.extname(originalname)
+    const newFileName = userEmail + ext
+    const filePath = path.join('avatars', newFileName)
+    const uploadDir = path.join(__dirname, '../', 'public')
+    const publicPath = path.join(uploadDir, 'avatars', newFileName)
+
+    await fs.rename(tempPath, publicPath)
+
     res.status(200).json({ avatarURL: filePath })
   } catch (error) {
     await fs.unlink(tempPath)
     console.log(error)
+    res.status(500).send()
   }
 }
 

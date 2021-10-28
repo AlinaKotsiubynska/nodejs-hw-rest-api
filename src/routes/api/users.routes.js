@@ -1,6 +1,6 @@
 const { Router } = require('express')
 const { users: ctrl } = require('@controllers')
-const { jwtValidator, multerUpload } = require('@middlewares')
+const { jwtValidator, multerUpload, jimpImgConvertor } = require('@middlewares')
 
 const router = Router()
 
@@ -10,6 +10,6 @@ router.post('/login', ctrl.loginUser)
 router.use(jwtValidator)
 router.get('/current', ctrl.getCurrentUser)
 router.post('/logout', ctrl.logoutUser)
-router.patch('/avatars', multerUpload.single('avatar'), ctrl.uploadUserAvatar)
+router.patch('/avatars', multerUpload.single('avatar'), jimpImgConvertor, ctrl.uploadUserAvatar)
 
 module.exports = router
