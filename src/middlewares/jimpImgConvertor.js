@@ -7,7 +7,7 @@ const jimpImgConvertor = async (req, res, next) => {
     const { path: tempPath } = req.file
 
     const image = await Jimp.read(tempPath)
-    image.resize(Jimp.AUTO, 250)
+    image.cover(250, 250)
     await image.writeAsync(tempPath)
 
     next()
