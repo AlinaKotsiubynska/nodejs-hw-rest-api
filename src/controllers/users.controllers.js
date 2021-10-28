@@ -34,6 +34,7 @@ const addUser = async (req, res, next) => {
 const loginUser = async (req, res, next) => {
   try {
     const candidate = req.body
+    console.log(candidate)
 
     joiValidationService(loginUserSchema, candidate)
 
