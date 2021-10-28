@@ -60,9 +60,9 @@ const getCurrentUser = async (req, res, next) => {
   try {
     const { _id } = req.user
 
-    const { email, subscription } = await operation.getCurrentUser(_id)
+    const { email, subscription, avatarURL } = await operation.getCurrentUser(_id)
 
-    res.status(200).json({ email, subscription })
+    res.status(200).json({ email, subscription, avatarURL })
   } catch (error) {
     resErrorHandler(res, error)
   }
@@ -83,11 +83,11 @@ const editUserSubscr = async (req, res) => {
 }
 
 const uploadUserAvatar = async (req, res) => {
-  if(!req.file) {
+  if (!req.file) {
     throw new CustomError(400, 'No file attached')
   }
   const { originalname, path: tempPath } = req.file
-  
+
   const { email: userEmail } = req.user
   try {
     const ext = path.extname(originalname)
