@@ -5,7 +5,6 @@ const {
   joiValidationService,
   createGravatar,
   CustomError,
-  emailService,
   jwtGenerator,
   sendEmail } = require('@utils')
 const operation = require('@helpers/operations/user')
@@ -34,7 +33,6 @@ const addUser = async (req, res, next) => {
 const loginUser = async (req, res, next) => {
   try {
     const candidate = req.body
-    console.log(candidate)
 
     joiValidationService(loginUserSchema, candidate)
 
@@ -124,6 +122,20 @@ const verifyUser = async (req, res) => {
   }
 }
 
+const resendVerificationEmail = async (req, res) => {
+  try {
+    const { email } = req.body
+    if (!email) {
+      throw new CustomError(400, 'missing required field email')
+    }
+    const verifyToken = await operation.getUserVerificationToken(email)
+    await sendEmail.onRegistration({ to: email, verifyToken })
+    res.status(200).json({ message: "Verification email sent" })
+  } catch (error) {
+    resErrorHandler(res, error)
+  }
+}
+
 module.exports = {
   addUser,
   loginUser,
@@ -131,5 +143,6 @@ module.exports = {
   getCurrentUser,
   editUserSubscr,
   uploadUserAvatar,
-  verifyUser
+  verifyUser,
+  resendVerificationEmail
 }

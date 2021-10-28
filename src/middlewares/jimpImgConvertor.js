@@ -1,6 +1,4 @@
 const Jimp = require('jimp')
-const fs = require('fs/promises')
-const path = require('path')
 
 const jimpImgConvertor = async (req, res, next) => {
   try {
