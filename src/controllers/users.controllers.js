@@ -1,4 +1,4 @@
-const { resErrorHandler, joiValidationService } = require('@utils')
+const { resErrorHandler, joiValidationService, createGravatar } = require('@utils')
 const operation = require('@helpers/operations/user')
 const {
   newUserSchema,
@@ -8,13 +8,15 @@ const {
 
 const addUser = async (req, res, next) => {
   try {
-    const candidate = req.body
+    const candidate = { ...req.body }
 
     joiValidationService(newUserSchema, candidate)
 
-    const { subscription, email } = await operation.addUser(candidate)
+    candidate.avatarURL = createGravatar(candidate.email)
 
-    res.status(201).json({ user: { email, subscription } })
+    const { subscription, email, avatarURL } = await operation.addUser(candidate)
+
+    res.status(201).json({ user: { email, subscription, avatarURL } })
   } catch (error) {
     resErrorHandler(res, error)
   }
@@ -78,4 +80,25 @@ const editUserSubscr = async (req, res) => {
   }
 }
 
-module.exports = { addUser, loginUser, logoutUser, getCurrentUser, editUserSubscr }
+const uploadUserAvatar = async (req, res) => {
+  const uploadDir = path.join(__dirname, '../', 'public')
+  const { originalname, path: tempPath } = req.file
+  try {
+    const publicPath = path.join(uploadDir, 'avatars', originalname)
+    const filePath = path.join('public', 'avatars', originalname)
+    await fs.rename(tempPath, publicPath).catch(err => console.log('err', err))
+    res.status(200).json({ avatarURL: filePath })
+  } catch (error) {
+    await fs.unlink(tempPath)
+    console.log(error)
+  }
+}
+
+module.exports = {
+  addUser,
+  loginUser,
+  logoutUser,
+  getCurrentUser,
+  editUserSubscr,
+  uploadUserAvatar
+}

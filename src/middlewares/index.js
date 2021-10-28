@@ -1,5 +1,7 @@
 const jwtValidator = require('./jwtValidator')
+const multerUpload = require('./multerUpload')
 
 module.exports = {
-  jwtValidator
+  jwtValidator,
+  multerUpload
 }
