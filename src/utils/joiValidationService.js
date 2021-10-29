@@ -1,5 +1,5 @@
 require('module-alias/register')
-const { CustomError } = require('@utils')
+const { CustomError } = require('@utils/CustomError')
 
 const joiValidationService = (schema, obj) => {
   const { error } = schema.validate(obj)

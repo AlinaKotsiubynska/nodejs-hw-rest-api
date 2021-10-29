@@ -11,5 +11,5 @@ module.exports = {
   JWT_TOKEN_REGEX,
   EMAIL_REGEX,
   BCRYPT_ROUNDS,
-  SUBSCR_TYPES
+  SUBSCR_TYPES,
 }
