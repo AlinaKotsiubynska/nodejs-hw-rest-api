@@ -1,12 +1,17 @@
-const { resErrorHandler, joiValidationService, createGravatar, CustomError } = require('@utils')
+const fs = require('fs/promises')
+const path = require('path')
+const {
+  resErrorHandler,
+  joiValidationService,
+  createGravatar,
+  CustomError,
+  jwtGenerator,
+  sendEmail } = require('@utils')
 const operation = require('@helpers/operations/user')
 const {
   newUserSchema,
   loginUserSchema,
   editUserSubscrSchema } = require('@helpers/schemas/user')
-const Jimp = require('jimp')
-const fs = require('fs/promises')
-const path = require('path')
 
 const addUser = async (req, res, next) => {
   try {
@@ -15,9 +20,10 @@ const addUser = async (req, res, next) => {
     joiValidationService(newUserSchema, candidate)
 
     candidate.avatarURL = createGravatar(candidate.email)
+    candidate.verifyToken = jwtGenerator({ email: candidate.email })
 
-    const { subscription, email, avatarURL } = await operation.addUser(candidate)
-
+    const { subscription, email, avatarURL, verifyToken } = await operation.addUser(candidate)
+    await sendEmail.onRegistration({ to: email, verifyToken })
     res.status(201).json({ user: { email, subscription, avatarURL } })
   } catch (error) {
     resErrorHandler(res, error)
@@ -101,8 +107,32 @@ const uploadUserAvatar = async (req, res) => {
     res.status(200).json({ avatarURL: filePath })
   } catch (error) {
     await fs.unlink(tempPath)
-    console.log(error)
     res.status(500).send()
+  }
+}
+
+const verifyUser = async (req, res) => {
+  try {
+    const { verificationToken } = req.params
+    await operation.verifyUser(verificationToken)
+
+    res.status(200).json({ message: 'Verification successful' })
+  } catch (error) {
+    resErrorHandler(res, error)
+  }
+}
+
+const resendVerificationEmail = async (req, res) => {
+  try {
+    const { email } = req.body
+    if (!email) {
+      throw new CustomError(400, 'missing required field email')
+    }
+    const verifyToken = await operation.getUserVerificationToken(email)
+    await sendEmail.onRegistration({ to: email, verifyToken })
+    res.status(200).json({ message: "Verification email sent" })
+  } catch (error) {
+    resErrorHandler(res, error)
   }
 }
 
@@ -112,5 +142,7 @@ module.exports = {
   logoutUser,
   getCurrentUser,
   editUserSubscr,
-  uploadUserAvatar
+  uploadUserAvatar,
+  verifyUser,
+  resendVerificationEmail
 }

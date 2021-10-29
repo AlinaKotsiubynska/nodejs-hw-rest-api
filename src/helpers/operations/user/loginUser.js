@@ -10,10 +10,14 @@ const loginUser = async (candidate) => {
       throw Error('Invalid email')
     }
 
+    if (!user.verify) {
+      throw Error('Verify your email')
+    }
+
     await validateHashedPassword(user.password, candidate.password)
 
 
-    user.token = jwtGenerator(user)
+    user.token = jwtGenerator({ email: user.email, _id: user._id })
     await user.save()
     return user
 
